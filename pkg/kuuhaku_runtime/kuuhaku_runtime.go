@@ -173,7 +173,7 @@ func Format(input string, format *kuuhaku_analyzer.AnalyzerResult, isRun bool, i
 	currPos.Line = 1
 	currPos.Column = 1
 	out := ""
-	for currPos.Raw < len(input) {
+	for currPos.Raw < len(input){
 		isThereSuccess := false
 		//TODO: change this to only one parse table
 		for _, parseTable := range format.ParseTables {
@@ -199,6 +199,9 @@ func Format(input string, format *kuuhaku_analyzer.AnalyzerResult, isRun bool, i
 		}
 		if !format.IsSearchMode && currPos.Raw < len(input)-1 {
 			return out, ErrExpectedEOFError(currPos)
+		}
+		if !format.IsSearchMode && currPos.Raw == len(input)-1 {
+			break
 		}
 	}
 	return out, nil
@@ -282,7 +285,7 @@ func runParseTable(input string, pos kuuhaku_tokenizer.Position, parseTable *kuu
 			if currRow.ActionTable[terminal.Terminal] != nil && terminal.Regexp != nil {
 				expected = append(expected, terminal.Terminal)
 				loc := terminal.Regexp.FindStringIndex(slicedInput)
-				if loc == nil {
+				if loc == nil || loc[0] != 0 {
 					continue
 				} else {
 					lookahead = slicedInput[0:loc[1]]

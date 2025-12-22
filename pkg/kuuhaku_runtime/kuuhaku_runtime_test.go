@@ -252,6 +252,60 @@ func TestRunWeirdRegex(t *testing.T) {
 	}
 }
 
+func TestRunStartOfString(t *testing.T) {
+	println("TestRunStartOfString1:")
+	ast, errs := kuuhaku_parser.Parse(
+		"test{C D C}"+
+		"C{<A|B>}"+
+		"D{<\\.>}",
+	)
+	if len(errs) != 0 {
+		println("Expected parser errors length to be 0")
+		helper.DisplayAllErrors(errs)
+		t.Fatal()
+	}
+	res, errs := kuuhaku_analyzer.Analyze(&ast, false)
+	if len(errs) != 0 {
+		println("Expected analyzer errors length to be 0, got " + strconv.Itoa(len(errs)))
+		helper.DisplayAllErrors(errs)
+		t.Fatal()
+	}
+	_, err := Format("A. B", &res, true, false)
+
+	if err == nil {
+		println("Expected a runtime error")
+	} else {
+		println(err.Error())
+	}
+}
+
+func TestRunEOF(t *testing.T) {
+	println("TestRunEOF:")
+	ast, errs := kuuhaku_parser.Parse(
+		"test{C D C}"+
+		"C{<A|B>}"+
+		"D{<\\.>}",
+	)
+	if len(errs) != 0 {
+		println("Expected parser errors length to be 0")
+		helper.DisplayAllErrors(errs)
+		t.Fatal()
+	}
+	res, errs := kuuhaku_analyzer.Analyze(&ast, false)
+	if len(errs) != 0 {
+		println("Expected analyzer errors length to be 0, got " + strconv.Itoa(len(errs)))
+		helper.DisplayAllErrors(errs)
+		t.Fatal()
+	}
+	_, err := Format("A.B", &res, true, false)
+
+	if err != nil {
+		println("Unexpected runtime error:")
+		println(err.Error())
+		t.Fatal()
+	}
+}
+
 func TestRunDoubleRecursive(t *testing.T) {
 	println("TestRunDoubleRecursive:")
 	ast, errs := kuuhaku_parser.Parse(

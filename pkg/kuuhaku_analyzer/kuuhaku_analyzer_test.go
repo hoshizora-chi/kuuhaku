@@ -730,7 +730,7 @@ func TestBuildParseTableErrorMultiplePartialReduce(t *testing.T) {
 }
 
 func TestBuildParseTable2(t *testing.T) {
-	ast, errs := kuuhaku_parser.Parse("E{E <*> B} E{E <+> B} E{B} B{<0>} B{<1>}")
+	ast, errs := kuuhaku_parser.Parse("E{E <\\*> B} E{E <\\+> B} E{B} B{<0>} B{<1>}")
 	if len(errs) != 2 {
 		println("Expected parser errors length to be 2")
 		t.Fatal()
@@ -928,11 +928,11 @@ func TestGetAllTerminalsAndLhs(t *testing.T) {
 		"B": true,
 	}
 
-	regexCompiled1, _ := regexp.Compile("^0")
-	regexCompiled2, _ := regexp.Compile("^1")
-	regexCompiled3, _ := regexp.Compile("^5")
-	regexCompiled4, _ := regexp.Compile("^10")
-	regexCompiled5, _ := regexp.Compile("^9")
+	regexCompiled1, _ := regexp.Compile("0")
+	regexCompiled2, _ := regexp.Compile("1")
+	regexCompiled3, _ := regexp.Compile("5")
+	regexCompiled4, _ := regexp.Compile("10")
+	regexCompiled5, _ := regexp.Compile("9")
 	terminalsMapCorrect := map[string]TerminalList{
 		"0": {
 			Terminal:   "0",

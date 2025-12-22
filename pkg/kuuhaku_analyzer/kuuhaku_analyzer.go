@@ -216,7 +216,7 @@ func (analyzer *Analyzer) getAllTerminalsAndLhs(startSymbol string, previousTerm
 			regexCurr, ok := matchRule.(kuuhaku_parser.RegexLiteral)
 			if ok {
 				if (*terminalsMap)[regexCurr.RegexString] == nil || (*terminalsMap)[regexCurr.RegexString].Precedence > rule.Order {
-					regexCompiled, err := regexp.Compile("^" + regexCurr.RegexString)
+					regexCompiled, err := regexp.Compile(regexCurr.RegexString)
 					if err != nil {
 						analyzer.Errors = append(analyzer.Errors, ErrInvalidRegex(regexCurr.Position, regexCurr.RegexString, err))
 					}
