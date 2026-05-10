@@ -228,10 +228,12 @@ func (analyzer *Analyzer) getAllTerminalsAndLhs(startSymbol string, previousTerm
 					regexCompiled, err := regexp.Compile(regexCurr.RegexString)
 					if err != nil {
 						analyzer.Errors = append(analyzer.Errors, ErrInvalidRegex(regexCurr.Position, regexCurr.RegexString, err))
-					}
-					regexTest := regexCompiled.FindStringIndex("")
-					if regexTest != nil {
-						analyzer.Errors = append(analyzer.Errors, ErrRegexCanMatchZeroCharacter(regexCurr.Position, regexCurr.RegexString))
+					} else {
+						regexTest := regexCompiled.FindStringIndex("")
+						if regexTest != nil {
+							e := ErrRegexCanMatchZeroCharacter(regexCurr.Position, regexCurr.RegexString) 
+							fmt.Println("Warning: " + e.Message)
+						}
 					}
 					(*terminalsMap)[regexCurr.RegexString] = &TerminalList{
 						Terminal:   regexCurr.RegexString,

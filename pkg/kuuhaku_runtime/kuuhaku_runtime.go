@@ -310,7 +310,7 @@ func runParseTable(input string, pos kuuhaku_tokenizer.Position, parseTable *kuu
 			fmt.Println("Lookahead: " + lookahead)
 			fmt.Println("LookaheadRegex: " + lookaheadRegex)
 		}
-		if (lookaheadFound && pos.Raw < len(input)) || (lookaheadFound && pos.Raw >= len(input) && currRow.EndReduceRule == nil) {
+		if (lookaheadFound && pos.Raw < len(input) - 1) || (lookaheadFound && pos.Raw >= len(input) - 1 && currRow.EndReduceRule == nil) {
 			currActionCell := currRow.ActionTable[lookaheadRegex]
 			if currActionCell != nil {
 				if currActionCell.Action == kuuhaku_analyzer.SHIFT {
