@@ -21,6 +21,7 @@ const (
 	INVALID_REGEX
 	INVALID_ARG_LENGTH
 	INVALID_LUA_LITERAL
+	REGEX_MATCHES_ZERO_CHARACTER
 )
 
 type AnalyzeError struct {
@@ -90,6 +91,14 @@ func ErrInvalidLuaLiteral(position kuuhaku_tokenizer.Position, luaError string) 
 		Message:  "Invalid Lua literal. Error:\n\t " + luaError,
 		Position: position,
 		Type:     INVALID_LUA_LITERAL,
+	}
+}
+
+func ErrRegexCanMatchZeroCharacter(position kuuhaku_tokenizer.Position, regex string) *AnalyzeError {
+	return &AnalyzeError{
+		Message:  "Regex <" + regex + "> can match zero character.",
+		Position: position,
+		Type:     REGEX_MATCHES_ZERO_CHARACTER,
 	}
 }
 
@@ -219,6 +228,10 @@ func (analyzer *Analyzer) getAllTerminalsAndLhs(startSymbol string, previousTerm
 					regexCompiled, err := regexp.Compile(regexCurr.RegexString)
 					if err != nil {
 						analyzer.Errors = append(analyzer.Errors, ErrInvalidRegex(regexCurr.Position, regexCurr.RegexString, err))
+					}
+					regexTest := regexCompiled.FindStringIndex("")
+					if regexTest != nil {
+						analyzer.Errors = append(analyzer.Errors, ErrRegexCanMatchZeroCharacter(regexCurr.Position, regexCurr.RegexString))
 					}
 					(*terminalsMap)[regexCurr.RegexString] = &TerminalList{
 						Terminal:   regexCurr.RegexString,
@@ -724,7 +737,7 @@ func PrintParseTable(parseTable *ParseTable) {
 		fmt.Print(" ")
 		i++
 	}
-	fmt.Print(" || $end ||")
+	fmt.Print(" ||   $end  ||")
 
 	for _, terminal := range parseTable.Terminals {
 		fmt.Print(" " + terminal.Terminal)
@@ -793,12 +806,17 @@ func PrintParseTable(parseTable *ParseTable) {
 
 		if state.EndReduceRule != nil {
 			if state.EndReduceRule.Action == ACCEPT {
-				fmt.Print(" acc  ||")
+				fmt.Print(" acc     ||")
 			} else if state.EndReduceRule.Action == REDUCE {
-				fmt.Print(" R    ||")
+				content := " R(" + strconv.Itoa(state.EndReduceRule.ReduceRule.Order) + ")" 
+				fmt.Print(content)
+				for k := 0; k < 9 - len(content); k++ {
+					fmt.Print(" ")
+				}
+				fmt.Print("||")
 			}
 		} else {
-			fmt.Print("      ||")
+			fmt.Print("         ||")
 		}
 		
 		for _, terminal := range parseTable.Terminals {
