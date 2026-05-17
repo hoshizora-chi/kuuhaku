@@ -3,12 +3,12 @@ package kuuhaku_analyzer
 import (
 	"errors"
 	"reflect"
-	"github.com/h2so5/goback/regexp"
 	"strconv"
 	"testing"
 
 	"github.com/ciii1/kuuhaku/internal/helper"
 	"github.com/ciii1/kuuhaku/pkg/kuuhaku_parser"
+	"github.com/dlclark/regexp2/v2/compat"
 )
 
 func TestErrorInvalidArgumentLength(t *testing.T) {
@@ -928,11 +928,11 @@ func TestGetAllTerminalsAndLhs(t *testing.T) {
 		"B": true,
 	}
 
-	regexCompiled1, _ := regexp.Compile("0")
-	regexCompiled2, _ := regexp.Compile("1")
-	regexCompiled3, _ := regexp.Compile("5")
-	regexCompiled4, _ := regexp.Compile("10")
-	regexCompiled5, _ := regexp.Compile("9")
+	regexCompiled1, _ := compat.Compile("0")
+	regexCompiled2, _ := compat.Compile("1")
+	regexCompiled3, _ := compat.Compile("5")
+	regexCompiled4, _ := compat.Compile("10")
+	regexCompiled5, _ := compat.Compile("9")
 	terminalsMapCorrect := map[string]TerminalList{
 		"0": {
 			Terminal:   "0",

@@ -1,8 +1,8 @@
 package kuuhaku_analyzer
 
 import (
-	"github.com/h2so5/goback/regexp"
 	"github.com/ciii1/kuuhaku/pkg/kuuhaku_parser"
+	"github.com/dlclark/regexp2/v2/compat"
 )
 
 type StateTransition struct {
@@ -49,7 +49,7 @@ type ParseTable struct {
 type TerminalList struct {
 	Terminal   string 
 	Precedence int
-	Regexp     regexp.Regexp
+	Regexp     *compat.Regexp
 }
 
 type ParseTableState struct {
